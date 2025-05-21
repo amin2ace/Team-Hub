@@ -5,7 +5,7 @@ import { User } from './schema/user.entity';
 
 @Injectable()
 export class UsersService implements IUsersService {
-  createNewUser(createUserDto: UserCreateDto): Promise<UserCreateResponseDto> {
+  createNewUser(createUserDto: UserCreateDto): Promise<User> {
     throw new Error('Method not implemented.');
   }
   findAll(): Promise<User[]> {

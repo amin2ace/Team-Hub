@@ -2,7 +2,7 @@ import { UserCreateResponseDto, UserCreateDto, UserUpdateDto } from '../dto';
 import { User } from '../schema/user.entity';
 
 export interface IUsersService {
-  createNewUser(createUserDto: UserCreateDto): Promise<UserCreateResponseDto>;
+  createNewUser(createUserDto: UserCreateDto): Promise<User>;
   findAll(): Promise<User[]>;
   findOne(userId: string): Promise<User>;
   update(userId: string, updateUserData: UserUpdateDto): Promise<any>;
