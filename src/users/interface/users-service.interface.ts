@@ -1,5 +1,5 @@
 import { UserCreateResponseDto, UserCreateDto, UserUpdateDto } from '../dto';
-import { User } from '../schema/user.schema';
+import { User } from '../schema/user.entity';
 
 export interface IUsersService {
   createNewUser(createUserDto: UserCreateDto): Promise<UserCreateResponseDto>;

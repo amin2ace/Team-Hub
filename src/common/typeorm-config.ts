@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
-import { User } from 'src/users/schema/user.schema';
+import { User } from 'src/users/schema/user.entity';
 
 @Injectable()
 export class TypeormConfig implements TypeOrmOptionsFactory {
@@ -14,7 +14,7 @@ export class TypeormConfig implements TypeOrmOptionsFactory {
       type: 'mongodb',
       url: this.config.get<string>('MONGODB_URI'),
       database: this.config.get<string>('DB_NAME'),
-      entities: [User],
+      entities: [__dirname + '/../**/*.entity{.ts,.js}'],
       synchronize: true,
     };
   }
