@@ -30,6 +30,7 @@ import { LoggerModule } from 'nestjs-pino';
       },
     }),
     JwtModule.registerAsync({
+      global: true,
       useClass: JwtConfig,
     }),
     TypeOrmModule.forRootAsync({
