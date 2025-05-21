@@ -11,7 +11,7 @@ import {
   userLoginDto,
 } from '../dto';
 
-export interface AuthService {
+export interface IAuthService {
   register(registerData: UserCreateDto): Promise<UserCreateResponseDto>;
 
   login(loginData: userLoginDto): Promise<userLoginResponseDto>;
