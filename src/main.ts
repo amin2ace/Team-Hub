@@ -1,9 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
-import { ValidationPipe } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './common/exception';
 import { Logger } from 'nestjs-pino';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 const config = new ConfigService();
 async function bootstrap() {
@@ -18,6 +19,19 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
+  swagger(app);
   await app.listen(config.get<number>('PORT'));
+}
+
+function swagger(app: INestApplication) {
+  const document = new DocumentBuilder()
+    .setTitle('Team Hub')
+    .addBearerAuth({ type: 'http' }, 'Access-Token')
+    .addCookieAuth('Refresh-Token')
+    .build();
+
+  const swaggerDocument = SwaggerModule.createDocument(app, document);
+
+  SwaggerModule.setup(config.get<string>('SWAGGER_PATH'), app, swaggerDocument);
 }
 bootstrap();
