@@ -36,3 +36,9 @@ export class ForbiddenOperationException extends ForbiddenException {
     super('You do not have permission to perform this operation');
   }
 }
+
+export class HashGenerationException extends UnauthorizedException {
+  constructor() {
+    super('Bcrypt hash generation failed');
+  }
+}
