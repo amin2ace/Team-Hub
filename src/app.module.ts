@@ -7,11 +7,25 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { JwtConfig, TypeormConfig, validationSchema } from './common';
 import { JwtModule } from '@nestjs/jwt';
+import { LoggerModule } from 'nestjs-pino';
 
 @Module({
   imports: [
+    LoggerModule.forRootAsync({
+      useFactory(...args) {
+        return {
+          pinoHttp: {
+            level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+            transport:
+              process.env.NODE_ENV !== 'production'
+                ? { target: 'pino-pretty' }
+                : undefined,
+          },
+        };
+      },
+    }),
     JwtModule.registerAsync({
-      global: true,
+      inject: [ConfigService],
       useClass: JwtConfig,
     }),
     TypeOrmModule.forRootAsync({
