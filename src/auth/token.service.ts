@@ -2,27 +2,31 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { ITokenService } from './interface/token-service.interface';
-import { TokenType, Token } from 'src/common/enum';
+import { TokenType, IToken } from 'src/common/enum';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Token } from './schema/token.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TokenService implements ITokenService {
   constructor(
     private readonly config: ConfigService,
     private readonly jwtService: JwtService,
+    @InjectRepository(Token) private readonly tokenRepo: Repository<IToken>,
   ) {}
-  async createToken(type: TokenType): Promise<Token> {
+  async createToken(type: TokenType): Promise<IToken> {
     throw new Error('Method not implemented.');
   }
-  async verifyToken(token: Token): Promise<Boolean> {
+  async verifyToken(token: IToken): Promise<Boolean> {
     throw new Error('Method not implemented.');
   }
-  async storeToken(token: Token): Promise<void> {
+  async storeToken(token: IToken): Promise<void> {
     throw new Error('Method not implemented.');
   }
-  async removeToken(token: Token): Promise<void> {
+  async removeToken(token: IToken): Promise<void> {
     throw new Error('Method not implemented.');
   }
-  async refreshToken(token: Token): Promise<Token> {
+  async refreshToken(token: IToken): Promise<IToken> {
     throw new Error('Method not implemented.');
   }
 }

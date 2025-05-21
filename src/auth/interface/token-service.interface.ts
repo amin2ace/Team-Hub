@@ -1,9 +1,9 @@
-import { Token, TokenType } from 'src/common/enum';
+import { IToken, TokenType } from 'src/common/enum';
 
 export interface ITokenService {
-  createToken(type: TokenType): Promise<Token>;
-  verifyToken(token: Token): Promise<Boolean>;
-  storeToken(token: Token): Promise<void>;
-  removeToken(token: Token): Promise<void>;
-  refreshToken(token: Token): Promise<Token>;
+  createToken(type: TokenType): Promise<IToken>;
+  verifyToken(token: IToken): Promise<Boolean>;
+  storeToken(token: IToken): Promise<void>;
+  removeToken(token: IToken): Promise<void>;
+  refreshToken(token: IToken): Promise<IToken>;
 }

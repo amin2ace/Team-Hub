@@ -3,7 +3,7 @@ export enum TokenType {
   REFRESH = 'REFRESH_TOKEN',
 }
 
-export interface Token {
+export interface IToken {
   type: TokenType;
   value: string;
 }
