@@ -21,16 +21,16 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const exceptionResponse = exception.getResponse();
 
     // Log the error with Pino
-    this.logger.error({
-      statusCode: status,
-      path: request.url,
-      method: request.method,
-      message:
-        typeof exceptionResponse === 'string'
-          ? exceptionResponse
-          : (exceptionResponse as any).message,
-      stack: exception.stack,
-    });
+    // this.logger.error({
+    //   statusCode: status,
+    //   path: request.url,
+    //   method: request.method,
+    //   message:
+    //     typeof exceptionResponse === 'string'
+    //       ? exceptionResponse
+    //       : (exceptionResponse as any).message,
+    //   stack: exception.stack,
+    // });
 
     response.status(status).json({
       statusCode: status,
