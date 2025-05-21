@@ -14,7 +14,7 @@ export class TokenService implements ITokenService {
     private readonly jwtService: JwtService,
     @InjectRepository(Token) private readonly tokenRepo: Repository<Token>,
   ) {}
-  async createToken(type: TokenType, payload: string): Promise<IToken> {
+  async createToken(type: TokenType, payload: object): Promise<IToken> {
     const token = await this.jwtService.signAsync(payload);
     return {
       type,
