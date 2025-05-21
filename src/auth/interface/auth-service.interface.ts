@@ -7,11 +7,12 @@ import {
   userLoginDto,
   userLoginResponseDto,
 } from '../dto';
+import { IToken } from 'src/common/enum';
 
 export interface IAuthService {
-  register(registerData: UserCreateDto): Promise<UserCreateResponseDto>;
+  register(registerData: UserCreateDto): Promise<IToken[]>;
 
-  login(loginData: userLoginDto): Promise<userLoginResponseDto>;
+  login(loginData: userLoginDto): Promise<IToken[]>;
 
   refreshToken(refreshTokenData: RefreshTokenDto): Promise<TokenResponseDto>;
 
@@ -24,4 +25,6 @@ export interface IAuthService {
   hash(data: string): Promise<string>;
 
   compareHash(plainData: string, encryptedData: string): Promise<boolean>;
+
+  generateTokens(userId: string): Promise<IToken[]>;
 }
