@@ -1,21 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { IAuthService } from './interface/auth-service.interface';
-import {
-  UserCreateDto,
-  UserCreateResponseDto,
-  userLoginResponseDto,
-} from 'src/users/dto';
+import { UserCreateDto, UserCreateResponseDto } from 'src/users/dto';
 import {
   userLoginDto,
   RefreshTokenDto,
   TokenResponseDto,
   ForgetPasswordDto,
   ResetPasswordDto,
+  userLoginResponseDto,
 } from './dto';
 import { UsersService } from 'src/users/users.service';
 import {
   EmailAlreadyInUseException,
+  HashComparisonException,
   HashGenerationException,
+  InvalidCredentialsException,
+  UserNotFoundException,
 } from 'src/common/exception';
 import { PinoLogger } from 'nestjs-pino';
 import * as bcrypt from 'bcrypt';
@@ -47,8 +47,22 @@ export class AuthService implements IAuthService {
       password: hashedPassword,
     });
   }
-  login(loginData: userLoginDto): Promise<userLoginResponseDto> {
-    throw new Error('Method not implemented.');
+  async login(loginData: userLoginDto): Promise<userLoginResponseDto> {
+    const { email, password } = loginData;
+
+    const isEmailValid = await this.usersService.findByEmail(email);
+
+    if (!isEmailValid) {
+      throw new UserNotFoundException();
+    }
+    const hashedPassword = await this.hash(password);
+    const isPasswordValid = await this.compareHash(password, hashedPassword);
+
+    if (!isPasswordValid) {
+      throw new InvalidCredentialsException();
+    }
+
+    return {};
   }
   refreshToken(refreshTokenData: RefreshTokenDto): Promise<TokenResponseDto> {
     throw new Error('Method not implemented.');
@@ -79,6 +93,10 @@ export class AuthService implements IAuthService {
     plainData: string,
     encryptedData: string,
   ): Promise<boolean> {
-    return false;
+    try {
+      return bcrypt.compare(plainData, encryptedData);
+    } catch (error) {
+      throw new HashComparisonException();
+    }
   }
 }
