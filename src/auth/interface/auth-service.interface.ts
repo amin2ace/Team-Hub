@@ -23,4 +23,8 @@ export interface IAuthService {
   resetPassword(resetPasswordData: ResetPasswordDto): Promise<string>;
 
   logout(userId: string): Promise<string>;
+
+  hash(data: string): Promise<string>;
+
+  compareHash(plainData: string, encryptedData: string): Promise<boolean>;
 }
