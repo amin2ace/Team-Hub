@@ -11,6 +11,11 @@ import { LoggerModule } from 'nestjs-pino';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: './.development.env',
+      validationSchema: validationSchema,
+    }),
     LoggerModule.forRootAsync({
       useFactory(...args) {
         return {
@@ -25,18 +30,12 @@ import { LoggerModule } from 'nestjs-pino';
       },
     }),
     JwtModule.registerAsync({
-      inject: [ConfigService],
       useClass: JwtConfig,
     }),
     TypeOrmModule.forRootAsync({
-      inject: [ConfigService],
       useClass: TypeormConfig,
     }),
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: './.development.env',
-      validationSchema: validationSchema,
-    }),
+
     AuthModule,
     UsersModule,
   ],
