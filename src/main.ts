@@ -30,7 +30,7 @@ function swagger(app: INestApplication) {
     .addCookieAuth('Refresh-Token')
     .build();
 
-  const swaggerDocument = SwaggerModule.createDocument(app, document);
+  const swaggerDocument = () => SwaggerModule.createDocument(app, document);
 
   SwaggerModule.setup(config.get<string>('SWAGGER_PATH'), app, swaggerDocument);
 }
