@@ -1,5 +1,5 @@
 import {
-  CreateUserResponseDto,
+  UserCreateResponseDto,
   UserCreateDto,
   userLoginResponseDto,
 } from 'src/users/dto';
@@ -12,7 +12,7 @@ import {
 } from '../dto';
 
 export interface AuthService {
-  register(registerData: UserCreateDto): Promise<CreateUserResponseDto>;
+  register(registerData: UserCreateDto): Promise<UserCreateResponseDto>;
 
   login(loginData: userLoginDto): Promise<userLoginResponseDto>;
 
