@@ -42,3 +42,9 @@ export class HashGenerationException extends UnauthorizedException {
     super('Bcrypt hash generation failed');
   }
 }
+
+export class HashComparisonException extends UnauthorizedException {
+  constructor() {
+    super('Bcrypt hash comparison failed');
+  }
+}
