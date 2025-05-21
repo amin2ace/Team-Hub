@@ -20,6 +20,8 @@ import {
 import { PinoLogger } from 'nestjs-pino';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
+import { TokenService } from './token.service';
+import { IToken, TokenType } from 'src/common/enum';
 
 @Injectable()
 export class AuthService implements IAuthService {
@@ -27,11 +29,12 @@ export class AuthService implements IAuthService {
     private readonly usersService: UsersService,
     private readonly logger: PinoLogger,
     private readonly config: ConfigService,
+    private readonly tokenService: TokenService,
   ) {
     logger.setContext(AuthService.name);
   }
 
-  async register(registerData: UserCreateDto): Promise<UserCreateResponseDto> {
+  async register(registerData: UserCreateDto): Promise<IToken[]> {
     const { email, password } = registerData;
     const isEmailInUse = await this.usersService.findByEmail(email);
 
@@ -42,17 +45,19 @@ export class AuthService implements IAuthService {
 
     const hashedPassword = await this.hash(password);
 
-    return this.usersService.createNewUser({
+    const { _id } = await this.usersService.createNewUser({
       ...registerData,
       password: hashedPassword,
     });
+
+    return await this.generateTokens(_id.toString());
   }
-  async login(loginData: userLoginDto): Promise<userLoginResponseDto> {
+  async login(loginData: userLoginDto): Promise<IToken[]> {
     const { email, password } = loginData;
 
-    const isEmailValid = await this.usersService.findByEmail(email);
+    const user = await this.usersService.findByEmail(email);
 
-    if (!isEmailValid) {
+    if (!user) {
       throw new UserNotFoundException();
     }
     const hashedPassword = await this.hash(password);
@@ -62,7 +67,7 @@ export class AuthService implements IAuthService {
       throw new InvalidCredentialsException();
     }
 
-    return {};
+    return await this.generateTokens(user._id);
   }
   refreshToken(refreshTokenData: RefreshTokenDto): Promise<TokenResponseDto> {
     throw new Error('Method not implemented.');
@@ -98,5 +103,22 @@ export class AuthService implements IAuthService {
     } catch (error) {
       throw new HashComparisonException();
     }
+  }
+
+  async generateTokens(userId: string): Promise<IToken[]> {
+    const accessToken = await this.tokenService.createToken(TokenType.ACCESS, {
+      sub: TokenType.ACCESS,
+    });
+    const refreshToken = await this.tokenService.createToken(
+      TokenType.REFRESH,
+      {
+        sub: TokenType.REFRESH,
+        userId: userId,
+      },
+    );
+
+    await this.tokenService.storeToken(refreshToken, userId);
+
+    return [accessToken, refreshToken];
   }
 }
