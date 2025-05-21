@@ -15,6 +15,7 @@ export class TypeormConfig implements TypeOrmOptionsFactory {
       url: this.config.get<string>('MONGODB_URI'),
       database: this.config.get<string>('DB_NAME'),
       entities: [User],
+      synchronize: true,
     };
   }
 }
