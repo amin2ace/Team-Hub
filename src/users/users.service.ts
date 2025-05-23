@@ -2,11 +2,26 @@ import { Injectable } from '@nestjs/common';
 import { IUsersService } from './interface/users-service.interface';
 import { UserCreateDto, UserCreateResponseDto, UserUpdateDto } from './dto';
 import { User } from './schema/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService implements IUsersService {
-  createNewUser(createUserDto: UserCreateDto): Promise<User> {
-    throw new Error('Method not implemented.');
+  constructor(
+    @InjectRepository(User) private readonly userRepo: Repository<User>,
+  ) {}
+  async createNewUser(createUserDto: UserCreateDto): Promise<User> {
+    const { email, password, phoneNumber, username } = createUserDto;
+
+    const user = this.userRepo.create({
+      email,
+      password,
+      phoneNumber,
+      username,
+    });
+
+    await this.userRepo.save(user);
+    return user;
   }
   findAll(): Promise<User[]> {
     throw new Error('Method not implemented.');
