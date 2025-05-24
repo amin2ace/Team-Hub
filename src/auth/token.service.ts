@@ -25,6 +25,8 @@ export class TokenService implements ITokenService {
     throw new Error('Method not implemented.');
   }
   async storeToken(token: IToken, userId: string): Promise<void> {
+    await this.removeToken(userId);
+
     const record = await this.tokenRepo.create({
       userId,
       token: token.value,
@@ -33,8 +35,14 @@ export class TokenService implements ITokenService {
     await this.tokenRepo.save(record);
   }
 
-  async removeToken(token: IToken): Promise<void> {
-    throw new Error('Method not implemented.');
+  async removeToken(userId: string): Promise<void> {
+    const token = await this.tokenRepo.findOne({
+      where: {
+        userId,
+      },
+    });
+
+    await this.tokenRepo.remove(token);
   }
   async refreshToken(token: IToken): Promise<IToken> {
     throw new Error('Method not implemented.');
