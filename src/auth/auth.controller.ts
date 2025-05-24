@@ -12,10 +12,14 @@ export class AuthController {
   ) {}
 
   @Post('/register')
-  async register(@Body() registerData: UserCreateDto) {}
+  async register(@Body() registerData: UserCreateDto) {
+    return this.authService.register(registerData);
+  }
 
   @Post('/login')
-  async login(@Body() loginData: userLoginDto) {}
+  async login(@Body() loginData: userLoginDto) {
+    return this.authService.login(loginData);
+  }
 
   @Post('/refresh')
   async refresh() {}
