@@ -21,8 +21,13 @@ export class TokenService implements ITokenService {
       value: token,
     };
   }
-  async verifyToken(token: IToken): Promise<Boolean> {
-    throw new Error('Method not implemented.');
+  async verifyToken(token: IToken): Promise<any | null> {
+    const payload = await this.jwtService.verifyAsync(token.value);
+
+    if (!payload) {
+      return null;
+    }
+    return payload;
   }
   async storeToken(token: IToken, userId: string): Promise<void> {
     await this.removeToken(userId);
