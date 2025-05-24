@@ -48,3 +48,27 @@ export class HashComparisonException extends UnauthorizedException {
     super('Bcrypt hash comparison failed');
   }
 }
+
+export class AuthorizationNotFoundException extends UnauthorizedException {
+  constructor() {
+    super('Authorization header missed');
+  }
+}
+
+export class BearerNotFoundException extends UnauthorizedException {
+  constructor() {
+    super('Authorization bearer misformatted');
+  }
+}
+
+export class TokenNotFoundException extends UnauthorizedException {
+  constructor() {
+    super('Authorization token not found');
+  }
+}
+
+export class TokenInvalidException extends UnauthorizedException {
+  constructor() {
+    super('Authorization token not valid');
+  }
+}
