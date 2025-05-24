@@ -20,9 +20,9 @@ export class UsersService implements IUsersService {
       username,
     });
 
-    await this.userRepo.save(user);
-    return user;
+    return this.userRepo.save(user);
   }
+
   findAll(): Promise<User[]> {
     throw new Error('Method not implemented.');
   }
@@ -35,8 +35,14 @@ export class UsersService implements IUsersService {
   remove(userId: string): Promise<any> {
     throw new Error('Method not implemented.');
   }
-  findByEmail(email: string): Promise<any | null> {
-    throw new Error('Method not implemented.');
+  findByEmail(email: string): Promise<User | null> {
+    const user = this.userRepo.findOne({
+      where: {
+        email,
+      },
+    });
+
+    return user;
   }
   findById(userId: string): Promise<any | null> {
     throw new Error('Method not implemented.');
