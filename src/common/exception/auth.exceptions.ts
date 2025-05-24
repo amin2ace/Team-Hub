@@ -72,3 +72,9 @@ export class TokenInvalidException extends UnauthorizedException {
     super('Authorization token not valid');
   }
 }
+
+export class TokenVerificationException extends UnauthorizedException {
+  constructor(private readonly error: any) {
+    super('Authorization token verification failed', { description: error });
+  }
+}
