@@ -45,12 +45,12 @@ export class AuthService implements IAuthService {
 
     const hashedPassword = await this.hash(password);
 
-    const { _id } = await this.usersService.createNewUser({
+    const user = await this.usersService.createNewUser({
       ...registerData,
       password: hashedPassword,
     });
 
-    return await this.generateTokens(_id.toString());
+    return await this.generateTokens(user.userId);
   }
   async login(loginData: userLoginDto): Promise<IToken[]> {
     const { email, password } = loginData;
@@ -58,7 +58,7 @@ export class AuthService implements IAuthService {
     const user = await this.usersService.findByEmail(email);
 
     if (!user) {
-      throw new UserNotFoundException();
+      throw new InvalidCredentialsException();
     }
     const hashedPassword = await this.hash(password);
     const isPasswordValid = await this.compareHash(password, hashedPassword);
@@ -67,7 +67,7 @@ export class AuthService implements IAuthService {
       throw new InvalidCredentialsException();
     }
 
-    return await this.generateTokens(user._id);
+    return await this.generateTokens(user.userId);
   }
   refreshToken(refreshTokenData: RefreshTokenDto): Promise<TokenResponseDto> {
     throw new Error('Method not implemented.');
@@ -108,6 +108,7 @@ export class AuthService implements IAuthService {
   async generateTokens(userId: string): Promise<IToken[]> {
     const accessToken = await this.tokenService.createToken(TokenType.ACCESS, {
       sub: TokenType.ACCESS,
+      userId: userId,
     });
     const refreshToken = await this.tokenService.createToken(
       TokenType.REFRESH,
