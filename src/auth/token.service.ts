@@ -42,6 +42,10 @@ export class TokenService implements ITokenService {
       },
     });
 
+    if (!token) {
+      return;
+    }
+
     await this.tokenRepo.remove(token);
   }
   async refreshToken(token: IToken): Promise<IToken> {
