@@ -1,4 +1,4 @@
-import { NestMiddleware } from '@nestjs/common';
+import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response } from 'express';
 import {
   AuthorizationNotFoundException,
@@ -6,10 +6,10 @@ import {
   TokenInvalidException,
   TokenNotFoundException,
 } from '../exception';
-import { JwtService } from '@nestjs/jwt';
 import { TokenService } from 'src/auth/token.service';
 import { IToken, TokenType } from '../enum';
 
+@Injectable()
 export class TokenMiddleware implements NestMiddleware {
   constructor(private readonly tokenService: TokenService) {}
   async use(req: Request, res: Response, next: (error?: any) => void) {
@@ -24,14 +24,14 @@ export class TokenMiddleware implements NestMiddleware {
       throw new BearerNotFoundException();
     }
 
+    if (!bearer[1]) {
+      throw new TokenNotFoundException();
+    }
+
     const token: IToken = {
       type: TokenType.ACCESS,
       value: bearer[1],
     };
-
-    if (!token) {
-      throw new TokenNotFoundException();
-    }
 
     const payload = await this.tokenService.verifyToken(token);
 
