@@ -6,6 +6,7 @@ import { TokenType, IToken } from 'src/common/enum';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Token } from './schema/token.entity';
 import { Repository } from 'typeorm';
+import { TokenVerificationException } from 'src/common/exception';
 
 @Injectable()
 export class TokenService implements ITokenService {
@@ -21,13 +22,12 @@ export class TokenService implements ITokenService {
       value: token,
     };
   }
-  async verifyToken(token: IToken): Promise<any | null> {
-    const payload = await this.jwtService.verifyAsync(token.value);
-
-    if (!payload) {
-      return null;
+  async verifyToken(token: IToken): Promise<any> {
+    try {
+      return await this.jwtService.verifyAsync(token.value);
+    } catch (error) {
+      throw new TokenVerificationException(error);
     }
-    return payload;
   }
   async storeToken(token: IToken, userId: string): Promise<void> {
     await this.removeToken(userId);
