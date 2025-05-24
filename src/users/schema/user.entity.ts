@@ -14,6 +14,9 @@ export class User {
   @ObjectIdColumn()
   _id: ObjectId;
 
+  @Column({ unique: true })
+  userId: string;
+
   @Column()
   username: string;
 
@@ -25,4 +28,9 @@ export class User {
 
   @Column()
   password: string;
+
+  @BeforeInsert()
+  generateId() {
+    return (this.userId = uuid());
+  }
 }
