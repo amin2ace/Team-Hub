@@ -33,7 +33,10 @@
     "@nestjs/typeorm": "^11.0.0",
     "bcrypt": "^6.0.0",
     "cache-manager": "^6.4.3",
+<<<<<<< HEAD
     "cacheable": "^1.9.0",
+=======
+>>>>>>> 6ab1b9ac898e7233d5b54d59c8142f88faef022f
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "joi": "^17.13.3",
