@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { ITokenService } from './interface/token-service.interface';
@@ -7,16 +7,24 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Token } from './schema/token.entity';
 import { Repository } from 'typeorm';
 import { TokenVerificationException } from 'src/common/exception';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class TokenService implements ITokenService {
   constructor(
     private readonly config: ConfigService,
     private readonly jwtService: JwtService,
+    @Inject(CACHE_MANAGER) private readonly cache: Cache,
     @InjectRepository(Token) private readonly tokenRepo: Repository<Token>,
   ) {}
   async createToken(type: TokenType, payload: object): Promise<IToken> {
     const token = await this.jwtService.signAsync(payload);
+
+    if (type === TokenType.REFRESH) {
+      await this.cacheRefreshToken(token);
+    }
+
     return {
       type,
       value: token,
@@ -55,5 +63,18 @@ export class TokenService implements ITokenService {
   }
   async refreshToken(token: IToken): Promise<IToken> {
     throw new Error('Method not implemented.');
+  }
+
+  async cacheRefreshToken(token: any): Promise<void> {
+    await this.cache.set(TokenType.REFRESH, token);
+  }
+
+  async getCache(key: TokenType): Promise<IToken> {
+    const cachedValue = (await this.cache.get(key)) as string;
+
+    return {
+      type: key,
+      value: cachedValue,
+    } as IToken;
   }
 }
