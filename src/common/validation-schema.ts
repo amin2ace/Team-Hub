@@ -12,4 +12,9 @@ export const validationSchema = Joi.object({
 
   // Hash
   SALT_ROUNDS: Joi.number().required(),
+
+  // Caching
+  REDIS_URL: Joi.string().required(),
+  REDIS_CACHE_TTL_MINUTES: Joi.number().required(),
+  LRU_SIZE: Joi.number().required(),
 });
