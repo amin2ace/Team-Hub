@@ -7,3 +7,9 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: teamHubUser
       MONGO_INITDB_ROOT_PASSWORD: teamHubPass
+
+  redis:
+    image: redis:alpine
+    container_name: Team_Hub_Redis
+    ports:
+      - 6379:6379
