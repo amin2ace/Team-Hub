@@ -8,6 +8,8 @@ import { UsersModule } from './users/users.module';
 import { JwtConfig, TypeormConfig, validationSchema } from './common';
 import { JwtModule } from '@nestjs/jwt';
 import { LoggerModule } from 'nestjs-pino';
+import { CacheModule } from '@nestjs/cache-manager';
+import { CacheConfig } from './common/cache-config';
 
 @Module({
   imports: [
@@ -33,8 +35,15 @@ import { LoggerModule } from 'nestjs-pino';
       global: true,
       useClass: JwtConfig,
     }),
+
     TypeOrmModule.forRootAsync({
       useClass: TypeormConfig,
+    }),
+
+    CacheModule.registerAsync({
+      isGlobal: true,
+      inject: [ConfigService],
+      useClass: CacheConfig,
     }),
 
     AuthModule,
