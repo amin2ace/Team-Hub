@@ -28,15 +28,15 @@ export class AuthController {
   @Post('/refresh')
   async refresh() {}
 
-  @ApiBearerAuth('Access-Token')
+  @ApiBearerAuth(TokenType.ACCESS)
   @Post('/forget-password')
   async forget(@Body() forgetPasswordData: ForgetPasswordDto) {}
 
-  @ApiBearerAuth('Access-Token')
+  @ApiBearerAuth(TokenType.ACCESS)
   @Post('/reset-password')
   async reset(@Body() resetPasswordData: ResetPasswordDto) {}
 
-  @ApiBearerAuth('Access-Token')
+  @ApiBearerAuth(TokenType.ACCESS)
   @Post('/logout')
   async logout(@Req() req) {}
 }

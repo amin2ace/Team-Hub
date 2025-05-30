@@ -27,7 +27,7 @@ async function bootstrap() {
 function swagger(app: INestApplication) {
   const document = new DocumentBuilder()
     .setTitle('Team Hub')
-    .addBearerAuth({ type: 'http' }, 'Access-Token')
+    .addBearerAuth({ type: 'http' }, TokenType.ACCESS)
     .addCookieAuth(TokenType.REFRESH)
     .build();
 
