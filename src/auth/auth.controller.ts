@@ -1,10 +1,16 @@
 import { Body, Controller, Post, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UserCreateDto } from 'src/users/dto/create-user-request.dto';
-import { ForgetPasswordDto, ResetPasswordDto, userLoginDto } from './dto';
+import {
+  ForgetPasswordDto,
+  ResetPasswordDto,
+  UserCreateResponseDto,
+  userLoginDto,
+} from './dto';
 import { UsersService } from 'src/users/users.service';
 import { ApiBearerAuth, ApiCookieAuth } from '@nestjs/swagger';
 import { TokenType } from 'src/common/enum';
+import { Serialize } from 'src/common/decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -13,6 +19,7 @@ export class AuthController {
     private readonly userService: UsersService,
   ) {}
 
+  @Serialize(UserCreateResponseDto)
   @ApiCookieAuth(TokenType.REFRESH)
   @Post('/register')
   async register(@Body() registerData: UserCreateDto) {
