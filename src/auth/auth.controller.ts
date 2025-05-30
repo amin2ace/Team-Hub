@@ -3,7 +3,8 @@ import { AuthService } from './auth.service';
 import { UserCreateDto } from 'src/users/dto/create-user-request.dto';
 import { ForgetPasswordDto, ResetPasswordDto, userLoginDto } from './dto';
 import { UsersService } from 'src/users/users.service';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCookieAuth } from '@nestjs/swagger';
+import { TokenType } from 'src/common/enum';
 
 @Controller('auth')
 export class AuthController {
@@ -12,11 +13,13 @@ export class AuthController {
     private readonly userService: UsersService,
   ) {}
 
+  @ApiCookieAuth(TokenType.REFRESH)
   @Post('/register')
   async register(@Body() registerData: UserCreateDto) {
     return this.authService.register(registerData);
   }
 
+  @ApiCookieAuth(TokenType.REFRESH)
   @Post('/login')
   async login(@Body() loginData: userLoginDto) {
     return this.authService.login(loginData);

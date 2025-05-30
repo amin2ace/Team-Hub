@@ -5,6 +5,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './common/exception';
 import { Logger } from 'nestjs-pino';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { TokenType } from './common/enum';
 
 const config = new ConfigService();
 async function bootstrap() {
@@ -27,7 +28,7 @@ function swagger(app: INestApplication) {
   const document = new DocumentBuilder()
     .setTitle('Team Hub')
     .addBearerAuth({ type: 'http' }, 'Access-Token')
-    .addCookieAuth('Refresh-Token')
+    .addCookieAuth(TokenType.REFRESH)
     .build();
 
   const swaggerDocument = () => SwaggerModule.createDocument(app, document);
