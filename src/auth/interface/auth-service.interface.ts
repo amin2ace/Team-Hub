@@ -1,18 +1,18 @@
-import { UserCreateResponseDto, UserCreateDto } from 'src/users/dto';
+import { UserCreateDto } from 'src/users/dto';
 import {
   ForgetPasswordDto,
   RefreshTokenDto,
   ResetPasswordDto,
   TokenResponseDto,
   userLoginDto,
-  userLoginResponseDto,
 } from '../dto';
 import { IToken } from 'src/common/enum';
+import { User } from 'src/users/schema/user.entity';
 
 export interface IAuthService {
-  register(registerData: UserCreateDto): Promise<IToken[]>;
+  register(registerData: UserCreateDto): Promise<User>;
 
-  login(loginData: userLoginDto): Promise<IToken[]>;
+  login(loginData: userLoginDto): Promise<User>;
 
   refreshToken(refreshTokenData: RefreshTokenDto): Promise<TokenResponseDto>;
 

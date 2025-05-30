@@ -26,6 +26,7 @@ export class AuthController {
     return this.authService.register(registerData);
   }
 
+  @Serialize(UserCreateResponseDto)
   @ApiCookieAuth(TokenType.REFRESH)
   @Post('/login')
   async login(@Body() loginData: userLoginDto) {

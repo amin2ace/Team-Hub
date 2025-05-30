@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { IAuthService } from './interface/auth-service.interface';
-import { UserCreateDto, UserCreateResponseDto } from 'src/users/dto';
+import { UserCreateDto } from 'src/users/dto';
 import {
   userLoginDto,
   RefreshTokenDto,
   TokenResponseDto,
   ForgetPasswordDto,
   ResetPasswordDto,
-  userLoginResponseDto,
 } from './dto';
 import { UsersService } from 'src/users/users.service';
 import {
@@ -15,13 +14,13 @@ import {
   HashComparisonException,
   HashGenerationException,
   InvalidCredentialsException,
-  UserNotFoundException,
 } from 'src/common/exception';
 import { PinoLogger } from 'nestjs-pino';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { TokenService } from './token.service';
 import { IToken, TokenType } from 'src/common/enum';
+import { User } from 'src/users/schema/user.entity';
 
 @Injectable()
 export class AuthService implements IAuthService {
@@ -34,7 +33,7 @@ export class AuthService implements IAuthService {
     logger.setContext(AuthService.name);
   }
 
-  async register(registerData: UserCreateDto): Promise<IToken[]> {
+  async register(registerData: UserCreateDto): Promise<User> {
     const { email, password } = registerData;
     const isEmailInUse = await this.usersService.findByEmail(email);
 
@@ -50,9 +49,11 @@ export class AuthService implements IAuthService {
       password: hashedPassword,
     });
 
-    return await this.generateTokens(user.userId);
+    await this.generateTokens(user.userId);
+    return user;
   }
-  async login(loginData: userLoginDto): Promise<IToken[]> {
+
+  async login(loginData: userLoginDto): Promise<User> {
     const { email, password } = loginData;
 
     const user = await this.usersService.findByEmail(email);
@@ -67,7 +68,8 @@ export class AuthService implements IAuthService {
       throw new InvalidCredentialsException();
     }
 
-    return await this.generateTokens(user.userId);
+    await this.generateTokens(user.userId);
+    return user;
   }
   refreshToken(refreshTokenData: RefreshTokenDto): Promise<TokenResponseDto> {
     throw new Error('Method not implemented.');
