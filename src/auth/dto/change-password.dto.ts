@@ -1,4 +1,5 @@
 import {
+  IsEmail,
   IsNotEmpty,
   IsString,
   IsStrongPassword,
@@ -6,6 +7,10 @@ import {
 } from 'class-validator';
 
 export class ChangePasswordDto {
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+
   @IsString()
   @IsNotEmpty()
   oldPassword: string;
