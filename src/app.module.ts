@@ -5,11 +5,11 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
-import { JwtConfig, TypeormConfig, validationSchema } from './common';
+import { JwtConfig, TypeormConfig, validationSchema } from './common/config';
 import { JwtModule } from '@nestjs/jwt';
 import { LoggerModule } from 'nestjs-pino';
 import { CacheModule } from '@nestjs/cache-manager';
-import { CacheConfig } from './common/cache-config';
+import { CacheConfig } from './common/config/cache-config';
 
 @Module({
   imports: [
