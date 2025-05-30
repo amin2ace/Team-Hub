@@ -119,6 +119,7 @@ export class AuthService implements IAuthService {
     );
 
     await this.tokenService.storeToken(refreshToken, userId);
+    await this.tokenService.setTokenInCache(refreshToken);
 
     return [accessToken, refreshToken];
   }

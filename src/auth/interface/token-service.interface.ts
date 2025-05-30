@@ -6,6 +6,6 @@ export interface ITokenService {
   storeToken(token: IToken, userId: string): Promise<void>;
   removeToken(userId: string): Promise<void>;
   refreshToken(token: IToken): Promise<IToken>;
-  cacheRefreshToken(token: string): Promise<void>;
-  getCache(key: TokenType): Promise<IToken>;
+  setTokenInCache(token: IToken): Promise<void>;
+  getTokenFromCache(key: TokenType): Promise<IToken>;
 }

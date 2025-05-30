@@ -21,10 +21,6 @@ export class TokenService implements ITokenService {
   async createToken(type: TokenType, payload: object): Promise<IToken> {
     const token = await this.jwtService.signAsync(payload);
 
-    if (type === TokenType.REFRESH) {
-      await this.cacheRefreshToken(token);
-    }
-
     return {
       type,
       value: token,
@@ -65,11 +61,11 @@ export class TokenService implements ITokenService {
     throw new Error('Method not implemented.');
   }
 
-  async cacheRefreshToken(token: any): Promise<void> {
-    await this.cache.set(TokenType.REFRESH, token);
+  async setTokenInCache(token: IToken): Promise<void> {
+    await this.cache.set(token.type, token.value);
   }
 
-  async getCache(key: TokenType): Promise<IToken> {
+  async getTokenFromCache(key: TokenType): Promise<IToken> {
     const cachedValue = (await this.cache.get(key)) as string;
 
     return {
