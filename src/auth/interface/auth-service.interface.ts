@@ -1,13 +1,13 @@
 import { UserCreateDto } from 'src/users/dto';
 import {
-  ForgetPasswordDto,
+  ChangePasswordDto,
   RefreshTokenDto,
-  ResetPasswordDto,
   TokenResponseDto,
   userLoginDto,
 } from '../dto';
 import { IToken } from 'src/common/enum';
 import { User } from 'src/users/schema/user.entity';
+import { ForgetPasswordDto } from '../dto/forget-password.dto';
 
 export interface IAuthService {
   register(registerData: UserCreateDto): Promise<User>;
@@ -18,7 +18,7 @@ export interface IAuthService {
 
   forgetPassword(forgetPasswordData: ForgetPasswordDto): Promise<string>;
 
-  resetPassword(resetPasswordData: ResetPasswordDto): Promise<string>;
+  changePassword(changePasswordData: ChangePasswordDto): Promise<string>;
 
   logout(userId: string): Promise<string>;
 

@@ -7,6 +7,7 @@ import {
   TokenResponseDto,
   ForgetPasswordDto,
   ResetPasswordDto,
+  ChangePasswordDto,
 } from './dto';
 import { UsersService } from 'src/users/users.service';
 import {
@@ -78,7 +79,7 @@ export class AuthService implements IAuthService {
   forgetPassword(forgetPasswordData: ForgetPasswordDto): Promise<string> {
     throw new Error('Method not implemented.');
   }
-  resetPassword(resetPasswordData: ResetPasswordDto): Promise<string> {
+  changePassword(changePasswordData: ChangePasswordDto): Promise<string> {
     throw new Error('Method not implemented.');
   }
   logout(userId: string): Promise<string> {

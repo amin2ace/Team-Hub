@@ -1,12 +1,7 @@
 import { Body, Controller, Post, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UserCreateDto } from 'src/users/dto/create-user-request.dto';
-import {
-  ForgetPasswordDto,
-  ResetPasswordDto,
-  UserCreateResponseDto,
-  userLoginDto,
-} from './dto';
+import { UserCreateDto } from 'src/auth/dto/create-user-request.dto';
+import { ChangePasswordDto, UserCreateResponseDto, userLoginDto } from './dto';
 import { UsersService } from 'src/users/users.service';
 import { ApiBearerAuth, ApiCookieAuth } from '@nestjs/swagger';
 import { TokenType } from 'src/common/enum';
@@ -38,11 +33,13 @@ export class AuthController {
 
   @ApiBearerAuth(TokenType.ACCESS)
   @Post('/forget-password')
-  async forget(@Body() forgetPasswordData: ForgetPasswordDto) {}
+  async forget(@Body() forgetPasswordData: ChangePasswordDto) {}
 
   @ApiBearerAuth(TokenType.ACCESS)
   @Post('/reset-password')
-  async reset(@Body() resetPasswordData: ResetPasswordDto) {}
+  async changePassword(@Body() changePasswordData: ChangePasswordDto) {
+    return this.authService.changePassword(changePasswordData);
+  }
 
   @ApiBearerAuth(TokenType.ACCESS)
   @Post('/logout')
