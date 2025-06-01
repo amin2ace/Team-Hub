@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { IAuthService } from './interface/auth-service.interface';
-import { UserCreateDto } from 'src/users/dto';
+import { UserCreateDto, UserUpdateDto } from 'src/users/dto';
 import {
   userLoginDto,
   RefreshTokenDto,
@@ -93,7 +93,11 @@ export class AuthService implements IAuthService {
     }
 
     const newHashedPassword = await this.hash(newPassword);
-    return this.usersService.update(user, newHashedPassword);
+    await this.usersService.update(user.userId, {
+      password: newHashedPassword,
+    } as UserUpdateDto);
+
+    return 'Password Change Successfully';
   }
   logout(userId: string): Promise<string> {
     throw new Error('Method not implemented.');

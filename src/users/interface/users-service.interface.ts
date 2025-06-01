@@ -6,7 +6,7 @@ export interface IUsersService {
   createNewUser(createUserDto: UserCreateDto): Promise<User>;
   findAll(): Promise<User[]>;
   findOne(userId: string): Promise<User>;
-  update(userId: ObjectId, updateUserData: UserUpdateDto): Promise<User>;
+  update(userId: string, updateUserData: UserUpdateDto): Promise<string>;
   remove(userId: string): Promise<any>;
   findByEmail(email: string): Promise<any | null>;
   findById(userId: string): Promise<any | null>;

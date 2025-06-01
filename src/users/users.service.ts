@@ -29,12 +29,15 @@ export class UsersService implements IUsersService {
   findOne(userId: string): Promise<User> {
     throw new Error('Method not implemented.');
   }
-  async update(user: User, updateUserData: UserUpdateDto): Promise<any> {
+  async update(userId: string, updateUserData: UserUpdateDto): Promise<string> {
     const updatedUser = await this.userRepo.update(
-      { _id: userId },
+      { userId },
       { password: updateUserData.password },
     );
+
+    return 'User Updated';
   }
+
   remove(userId: string): Promise<any> {
     throw new Error('Method not implemented.');
   }
