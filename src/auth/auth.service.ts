@@ -5,8 +5,6 @@ import {
   userLoginDto,
   RefreshTokenDto,
   TokenResponseDto,
-  ForgetPasswordDto,
-  ResetPasswordDto,
   ChangePasswordDto,
 } from './dto';
 import { UsersService } from 'src/users/users.service';
@@ -14,6 +12,7 @@ import {
   EmailAlreadyInUseException,
   HashComparisonException,
   HashGenerationException,
+  InvalidCredentialConfirmationException,
   InvalidCredentialsException,
 } from 'src/common/exception';
 import { PinoLogger } from 'nestjs-pino';
@@ -76,11 +75,25 @@ export class AuthService implements IAuthService {
     throw new Error('Method not implemented.');
   }
 
-  forgetPassword(forgetPasswordData: ForgetPasswordDto): Promise<string> {
+  forgetPassword(forgetPasswordData: ChangePasswordDto): Promise<string> {
     throw new Error('Method not implemented.');
   }
-  changePassword(changePasswordData: ChangePasswordDto): Promise<string> {
-    throw new Error('Method not implemented.');
+  async changePassword(changePasswordData: ChangePasswordDto): Promise<string> {
+    const { email, oldPassword, newPassword, confirmPassword } =
+      changePasswordData;
+    const user = await this.usersService.findByEmail(email);
+
+    const hashedPassword = await this.hash(oldPassword);
+    if (hashedPassword !== user.password) {
+      throw new InvalidCredentialsException();
+    }
+
+    if (newPassword !== confirmPassword) {
+      throw new InvalidCredentialConfirmationException();
+    }
+
+    const newHashedPassword = await this.hash(newPassword);
+    return this.usersService.update(user, newHashedPassword);
   }
   logout(userId: string): Promise<string> {
     throw new Error('Method not implemented.');
