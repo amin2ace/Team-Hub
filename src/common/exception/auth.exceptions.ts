@@ -19,6 +19,12 @@ export class InvalidCredentialsException extends UnauthorizedException {
   }
 }
 
+export class InvalidCredentialConfirmationException extends UnauthorizedException {
+  constructor() {
+    super('Password confirmation not match');
+  }
+}
+
 export class UserNotFoundException extends NotFoundException {
   constructor() {
     super('User not found');
