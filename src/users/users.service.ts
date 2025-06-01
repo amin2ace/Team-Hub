@@ -3,7 +3,7 @@ import { IUsersService } from './interface/users-service.interface';
 import { UserCreateDto, UserUpdateDto } from './dto';
 import { User } from './schema/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ObjectId, Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService implements IUsersService {
@@ -29,8 +29,11 @@ export class UsersService implements IUsersService {
   findOne(userId: string): Promise<User> {
     throw new Error('Method not implemented.');
   }
-  update(userId: string, updateUserData: UserUpdateDto): Promise<any> {
-    throw new Error('Method not implemented.');
+  async update(user: User, updateUserData: UserUpdateDto): Promise<any> {
+    const updatedUser = await this.userRepo.update(
+      { _id: userId },
+      { password: updateUserData.password },
+    );
   }
   remove(userId: string): Promise<any> {
     throw new Error('Method not implemented.');
