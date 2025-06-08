@@ -8,4 +8,5 @@ export interface ITokenService {
   refreshToken(token: IToken): Promise<IToken>;
   setTokenInCache(token: IToken): Promise<void>;
   getTokenFromCache(key: TokenType): Promise<IToken>;
+  findToken(token: IToken): Promise<Boolean>;
 }

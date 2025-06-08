@@ -6,7 +6,10 @@ import { TokenType, IToken } from 'src/common/enum';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Token } from './schema/token.entity';
 import { Repository } from 'typeorm';
-import { TokenVerificationException } from 'src/common/exception';
+import {
+  RefreshTokenInvalidException,
+  TokenVerificationException,
+} from 'src/common/exception';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 
@@ -36,7 +39,7 @@ export class TokenService implements ITokenService {
   async storeToken(token: IToken, userId: string): Promise<void> {
     await this.removeToken(userId);
 
-    const record = await this.tokenRepo.create({
+    const record = this.tokenRepo.create({
       userId,
       token: token.value,
     });
@@ -72,5 +75,21 @@ export class TokenService implements ITokenService {
       type: key,
       value: cachedValue,
     } as IToken;
+  }
+
+  async findToken(token: IToken): Promise<Boolean> {
+    const { value } = token;
+
+    const tokenValue = await this.tokenRepo.findOne({
+      where: {
+        token: value,
+      },
+    });
+
+    if (!tokenValue) {
+      throw new RefreshTokenInvalidException();
+    }
+
+    return true;
   }
 }
