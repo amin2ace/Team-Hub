@@ -14,6 +14,7 @@ import {
   HashGenerationException,
   InvalidCredentialConfirmationException,
   InvalidCredentialsException,
+  RefreshTokenInvalidException,
 } from 'src/common/exception';
 import { PinoLogger } from 'nestjs-pino';
 import * as bcrypt from 'bcrypt';
@@ -21,6 +22,7 @@ import { ConfigService } from '@nestjs/config';
 import { TokenService } from './token.service';
 import { IToken, TokenType } from 'src/common/enum';
 import { User } from 'src/users/schema/user.entity';
+import { string } from 'joi';
 
 @Injectable()
 export class AuthService implements IAuthService {
@@ -71,13 +73,35 @@ export class AuthService implements IAuthService {
     await this.generateTokens(user.userId);
     return user;
   }
-  refreshToken(refreshTokenData: RefreshTokenDto): Promise<TokenResponseDto> {
+  async refreshToken(
+    refreshTokenData: RefreshTokenDto,
+  ): Promise<TokenResponseDto> {
+    const { refreshToken } = refreshTokenData;
+
+    const token = {
+      type: TokenType.REFRESH,
+      value: refreshToken,
+    };
+
+    const isTokenValid = await this.tokenService.verifyToken({
+      type: TokenType.REFRESH,
+      value: refreshToken,
+    });
+
+    if (!isTokenValid) {
+      throw new RefreshTokenInvalidException();
+    }
+
+    const storedToken = await this.tokenService.refreshToken(token);
+    return {
+      tokens: await this.generateTokens(storedToken.userId),
+    };
+  }
+
+  async forgetPassword(forgetPasswordData: ChangePasswordDto): Promise<string> {
     throw new Error('Method not implemented.');
   }
 
-  forgetPassword(forgetPasswordData: ChangePasswordDto): Promise<string> {
-    throw new Error('Method not implemented.');
-  }
   async changePassword(changePasswordData: ChangePasswordDto): Promise<string> {
     const { email, oldPassword, newPassword, confirmPassword } =
       changePasswordData;
@@ -99,6 +123,7 @@ export class AuthService implements IAuthService {
 
     return 'Password Change Successfully';
   }
+
   logout(userId: string): Promise<string> {
     throw new Error('Method not implemented.');
   }
@@ -126,16 +151,21 @@ export class AuthService implements IAuthService {
   }
 
   async generateTokens(userId: string): Promise<IToken[]> {
-    const accessToken = await this.tokenService.createToken(TokenType.ACCESS, {
-      sub: TokenType.ACCESS,
-      userId: userId,
-    });
+    const accessToken = await this.tokenService.createToken(
+      TokenType.ACCESS,
+      {
+        sub: TokenType.ACCESS,
+        userId: userId,
+      },
+      this.config.get<string>('ACCESS_TOKEN_EXPIRES_IN'),
+    );
     const refreshToken = await this.tokenService.createToken(
       TokenType.REFRESH,
       {
         sub: TokenType.REFRESH,
         userId: userId,
       },
+      this.config.get<string>('REFRESH_TOKEN_EXPIRES_IN'),
     );
 
     await this.tokenService.storeToken(refreshToken, userId);
