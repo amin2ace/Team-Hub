@@ -1,3 +1,9 @@
+import { Expose } from 'class-transformer';
+import { IsNotEmpty, IsString } from 'class-validator';
+
 export class RefreshTokenDto {
-  token: string;
+  @Expose()
+  @IsString()
+  @IsNotEmpty()
+  refreshToken: string;
 }
