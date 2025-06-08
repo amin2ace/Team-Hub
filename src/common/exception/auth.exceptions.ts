@@ -84,3 +84,9 @@ export class TokenVerificationException extends UnauthorizedException {
     super('Authorization token verification failed', { description: error });
   }
 }
+
+export class RefreshTokenInvalidException extends UnauthorizedException {
+  constructor() {
+    super('Refresh Token Invalid');
+  }
+}
