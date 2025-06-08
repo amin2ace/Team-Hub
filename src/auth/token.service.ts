@@ -21,8 +21,12 @@ export class TokenService implements ITokenService {
     @Inject(CACHE_MANAGER) private readonly cache: Cache,
     @InjectRepository(Token) private readonly tokenRepo: Repository<Token>,
   ) {}
-  async createToken(type: TokenType, payload: object): Promise<IToken> {
-    const token = await this.jwtService.signAsync(payload);
+  async createToken(
+    type: TokenType,
+    payload: object,
+    expiresIn: string,
+  ): Promise<IToken> {
+    const token = await this.jwtService.signAsync(payload, { expiresIn });
 
     return {
       type,
@@ -60,8 +64,22 @@ export class TokenService implements ITokenService {
 
     await this.tokenRepo.remove(token);
   }
-  async refreshToken(token: IToken): Promise<IToken> {
-    throw new Error('Method not implemented.');
+  async refreshToken(token: IToken): Promise<Token> {
+    const { value } = token;
+    const storedToken = await this.tokenRepo.findOne({
+      where: {
+        token: value,
+      },
+    });
+
+    if (!storedToken) {
+      throw new RefreshTokenInvalidException();
+    }
+
+    const { userId } = storedToken;
+    await this.removeToken(userId);
+
+    return storedToken;
   }
 
   async setTokenInCache(token: IToken): Promise<void> {
@@ -75,21 +93,5 @@ export class TokenService implements ITokenService {
       type: key,
       value: cachedValue,
     } as IToken;
-  }
-
-  async findToken(token: IToken): Promise<Boolean> {
-    const { value } = token;
-
-    const tokenValue = await this.tokenRepo.findOne({
-      where: {
-        token: value,
-      },
-    });
-
-    if (!tokenValue) {
-      throw new RefreshTokenInvalidException();
-    }
-
-    return true;
   }
 }
